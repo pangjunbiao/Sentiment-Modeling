@@ -14,26 +14,22 @@ The pipeline follows the logical flow shown in the diagram:
 ### Stage A: Data & Preprocessing
 - **Input**: Weibo posts + user metadata.  
 - **Cleaning**: Text tokenization and stopword removal.  
-- **Influence weighting**: Each post is assigned a dynamic influence score \( Q_i(t) \) using i-TF, i-IDF, and temporal decay functions.  
-
+- **Influence weighting**: Each post is assigned a dynamic influence score $$Q_i(t)$$ using i-TF, i-IDF, and temporal decay functions.  
+ 
 ### Stage B: Graph Construction & PDF
-- **Keyword Graph** \( W_t \): Build per-window, weighted by user/post influence.  
-- **PDF Model**: Apply Poisson Deconvolution Factorization (PDF):
-  \[
-  W_t \approx U A_t U^\top + H_t + \mu S_t
-  \]
-  - \( U \): topic–keyword basis  
-  - \( A_t \): topic attention matrix  
-  - \( H_t \): background noise  
-  - \( S_t \): sentiment term  
-- **Optimization**: Solved via MM (for \( U, A_t \)) and ADMM (for \( H_t \)).  
+- **Keyword Graph** $$W_t$$: Build per-window, weighted by user/post influence.  
+- **PDF Model**: Apply Poisson Deconvolution Factorization (PDF):  
+  $$W_t \approx U A_t U^\top + H_t + \mu S_t$$  
+  - $$U$$: topic–keyword basis  
+  - $$A_t$$: topic attention matrix  
+  - $$H_t$$: background noise  
+  - $$S_t$$: sentiment term  
+- **Optimization**: Solved via MM (for $$U, A_t$$) and ADMM (for $$H_t$$).  
 
 ### Stage C: Sentiment Escalation
-- **Sentiment Estimation**: Use SnowNLP + kernel density estimation (KDE) to model daily distributions in \([0,1]\).  
-- **Escalation Signal**: Compute inter-day shifts via KL divergence:
-  \[
-  E(t, k) = KL(p_t \;\|\; p_{t+1})
-  \]
+- **Sentiment Estimation**: Use SnowNLP + kernel density estimation (KDE) to model daily distributions in $$[0,1]$$.  
+- **Escalation Signal**: Compute inter-day shifts via KL divergence:  
+  $$E(t, k) = KL(p_t \;\|\; p_{t+1})$$  
 
 ### Stage D: Prioritization & Early Warning
 - **Severity Scoring**: Combine multi-factor scores:
